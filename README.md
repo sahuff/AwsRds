@@ -6,6 +6,8 @@ Open source project for performing various AWS RDS (Relational Database Service)
 - [AwsRds](#awsrds)
   - [Table of Contents](#table-of-contents)
   - [Overview](#overview)
+  - [Initialization Class](#initialization-class)
+    - [AwsRDS](#awsrds-1)
   - [Instances](#instances)
     - [AddEnvTag](#addenvtag)
     - [CheckDBEnvVar](#checkdbenvvar)
@@ -28,6 +30,21 @@ Open source project for performing various AWS RDS (Relational Database Service)
 ## Overview
 `AwsRds` is a Python project to interact with AWS RDS instances. It provides tools to list, manage, and monitor RDS instances programmatically.
 
+- Prerequisites
+  - Must have an AWS CLI Profile configured
+
+## Initialization Class
+
+### AwsRDS
+
+**Parameters**
+- Profile (str)
+  - AWS CLI Profile Name
+    - **Default**: default
+- Region (str)
+  - AWS CLI Profile Region
+    - **Default**: us-east-1
+
 ## Instances
 
 ### AddEnvTag
@@ -49,7 +66,7 @@ bool
 **Example**
 
 ```python
-import AwsRds 
+from AwsRds import AwsRds 
 
 rds = AwsRds()
 data = rds.AddEnvTag("postgres-aws","env","PROD")
@@ -75,7 +92,7 @@ Nothing
 **Example**
 
 ```python
-import AwsRds 
+from AwsRds import AwsRds 
 
 rds = AwsRds()
 rds.CheckDBEnvVar()
@@ -86,9 +103,9 @@ rds.CheckDBEnvVar()
 Delete a Tag from a RDS Instance.
 
 **Parameters**
-- Instance
+- Instance (str) [REQUIRED]
   - RDS instance
-- Key
+- Key (str) [REQUIRED]
   - Tag Key
 
 **Returns**
@@ -98,7 +115,7 @@ bool
 **Example**
 
 ```python
-import AwsRds 
+from AwsRds import AwsRds 
 
 rds = AwsRds()
 data = rds.AddEnvTag("postgres-aws","env")
@@ -124,7 +141,7 @@ Nothing
 
 **Example**
 ```python
-import AwsRds 
+from AwsRds import AwsRds 
 
 rds = AwsRds()
 rds.DownloadLogs("postgres-aws","my_server_log","/tmp/logs"):
@@ -141,11 +158,11 @@ Download slow queries.
 - Requires execution from within a Linux EC2 instance
 
 **Parameters**
-- instance (str)
+- instance (str) [REQUIRED]
   - The RDS instance name.
-- logfile (str)
+- logfile (str) [REQUIRED]
   - The RDS log file name.  
-- dloc (str)
+- dloc (str) [REQUIRED]
   - The destination location and file name.
 
 **Returns**
@@ -155,7 +172,7 @@ Nothing
 **Example**
 
 ```python
-import AwsRds 
+from AwsRds import AwsRds 
 
 rds = AwsRds()
 data = rds.DownloadSlowQueries("postgres-aws","my_server_slow_log","/tmp/slowlogs/new_log)
@@ -166,9 +183,9 @@ data = rds.DownloadSlowQueries("postgres-aws","my_server_slow_log","/tmp/slowlog
 Check RDS to see if name exists.
 
 **Parameters**
-- name (str) [REQUIRED]
+- Name (str) [REQUIRED]
   - RDS instance or cluster name
-- iscluster (bool)
+- IsCluster (bool)
   - Is this name a cluster 
   - **Default**: True
 
@@ -179,7 +196,7 @@ bool
 **Example**
 
 ```python
-import AwsRds 
+from AwsRds import AwsRds 
 
 rds = AwsRds()
 data = rds.Exists("postgres-aws")
@@ -192,13 +209,13 @@ print(data)
 Get all RDS Instances by engine.
 
 **Parameters**
-- engine (str) [REQUIRED]
+- Engine (str)
   - The RDS engine type to filter instances by.
   - **Default**: aurora-postgresql
-- active (bool)	
+- Active (bool)	
   - Filter only active instances
   - **Default**: False
-- retout (bool)	
+- RetOut (bool)	
   - Print output to standard output
   - **Default**: False
 
@@ -209,7 +226,7 @@ Instance Names
 **Example**
 
 ```python
-import AwsRds 
+from AwsRds import AwsRds 
 
 rds = AwsRds()
 instances = rds.GetInstance(engine="aurora-postgresql", active=True)
@@ -221,9 +238,9 @@ print(instances)
 Get RDS Instance by a Tag Value.
 
 **Parameters**
-- key
+- Key (str) [REQUIRED]
   - Tag Key
-- value
+- Value (str) [REQUIRED]
   - Tag Value
 
 **Returns**
@@ -231,12 +248,10 @@ Get RDS Instance by a Tag Value.
 list
 [{InstanceName: Value, DBName: Value}]
 
-    InstanceName: [], DBName: []
-
 **Example**
 
 ```python
-import AwsRds 
+from AwsRds import AwsRds 
 
 rds = AwsRds()
 data = rds.GetInstanceByTag("env","PROD")
@@ -249,7 +264,7 @@ print(data)
 Get the RDS instance cluster name.
 
 **Parameters**
-- instance (str) [REQUIRED]
+- Instance (str) [REQUIRED]
   - RDS instance name
 
 **Returns**
@@ -259,7 +274,7 @@ RDS Cluster Name
 **Example**
 
 ```python
-import AwsRds 
+from AwsRds import AwsRds 
 
 rds = AwsRds()
 data = rds.CheckDBEnvVar("postgres-aws")
@@ -272,12 +287,12 @@ print(data)
 Will get the RDS log file names that have been modified within a period.
 
 **Parameters**
-- instance (str) [REQUIRED]
+- Instance (str) [REQUIRED]
   - RDS instance name.
-- mins (int)
+- Mins (int)
   - Number of minutes prior to check.
   - **Default**: 5
-- showblankfile (bool)
+- ShowBlankFile (bool)
   - Show a file if it is empty
   - **Default**: False
 
@@ -288,7 +303,7 @@ RDS Log File Name
 **Example**
 
 ```python
-import AwsRds 
+from AwsRds import AwsRds 
 
 rds = AwsRds()
 logs = rds.GetModifiedLogs(instance="postgres-aws")
@@ -300,9 +315,9 @@ print(logs)
 Get a RDS Snapshot for an RDS Instance.
 
 **Parameters**
-- instance (str) [REQUIRED]
+- Instance (str) [REQUIRED]
   - RDS instance
-- retout (bool)
+- RetOut (bool)
   - Return Standard Output
   - **Default** = False
 
@@ -310,12 +325,11 @@ Get a RDS Snapshot for an RDS Instance.
 
 list
 [{Snapshot: Value, Snapshot Date: Value}]
-'''
 
 **Example**
 
 ```python
-import AwsRds 
+from AwsRds import AwsRds 
 
 rds = AwsRds()
 data = rds.GetSnapshotByInstance("postgres-aws")
@@ -329,10 +343,10 @@ Get top RDS snapshot for an instance or all instances.
 The function will get the lastest or earliest snapshot for an instance.
 
 **Parameters**
-- InstanceName
+- InstanceName (str)
   - RDS instance name
   - **Default** = ALL
-- SortOrder
+- SortOrder (str)
   - The sort order
   - Options
     - ASC (ascending order) 
@@ -347,7 +361,7 @@ Snapshot Name
 **Example**
 
 ```python
-import AwsRds 
+from AwsRds import AwsRds 
 
 rds = AwsRds()
 data = rds.GetTopSnapshot("postgres-aws")
@@ -375,7 +389,7 @@ Nothing
 **Example**
 
 ```python
-import AwsRds 
+from AwsRds import AwsRds 
 
 rds = AwsRds()
 rds.InstanceAction("postgres-aws","Start")
@@ -386,7 +400,7 @@ rds.InstanceAction("postgres-aws","Start")
 Check to see if a RDS snapshot exists.
 
 **Parameters**
-- SnapshotName
+- SnapshotName (str) [REQUIRED]
   - RDS Snapshot name 
 
 **Returns**
@@ -396,7 +410,7 @@ bool
 **Example**
 
 ```python
-import AwsRds 
+from AwsRds import AwsRds 
 
 rds = AwsRds()
 data = rds.SnapshotExists("postgres-ss")
@@ -409,12 +423,12 @@ print(data)
 Check to see if RDS is running.
 
 **Parameters**
-- name (str) [REQUIRED]
+- Name (str) [REQUIRED]
   - RDS instance or cluster name.
-- iscluster (bool) 
+- IsCluster (bool) 
   - Is this name a cluster
   - **Default**: True
-- rtntext (bool)
+- RtnText (bool)
   - Return text only
   - **Default**: False
 
@@ -425,7 +439,7 @@ bool or str
 **Example**
 
 ```python
-import AwsRds 
+from AwsRds import AwsRds 
 
 rds = AwsRds()
 data = rds.Status("postgres-aws")
@@ -438,9 +452,9 @@ print(data)
 Tail a specific RDS log.
 
 **Parameters**
-- instance (str) [REQUIRED]
+- Instance (str) [REQUIRED]
   - The RDS instance name.
-- logfile (str) [REQUIRED]
+- LogFile (str) [REQUIRED]
   - The RDS log file name.  
 
 **Returns**
@@ -450,7 +464,7 @@ RDS Log File Data
 **Example**
 
 ```python
-import AwsRds 
+from AwsRds import AwsRds 
 
 rds = AwsRds()
 data = rds.TailLogs("postgres-aws","my_server_log")
@@ -463,11 +477,11 @@ print(data)
 Will upload a local file to an S3 bucket.
 
 **Parameters**
-- fileloc (str) [REQUIRED]
+- FileLoc (str) [REQUIRED]
   - File location of the file you want to upload.
-- bucket name (str) [REQUIRED]
+- BucketName (str) [REQUIRED]
   - The s3 bucket name. *Please note this is only the top level bucket.*
-- destfileloc (str) [REQUIRED]
+- DestFileLoc (str) [REQUIRED]
   - The s3 location and file name.
   - Examples
     - File Only Copy
@@ -483,7 +497,7 @@ Nothing
 **Example**
 
 ```python
-import AwsRds 
+from AwsRds import AwsRds 
 
 rds = AwsRds()
 rds.UploadToS3("/temp/log.txt","testbucket","log.txt")

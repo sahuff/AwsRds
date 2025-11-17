@@ -8,10 +8,10 @@ from datetime import timedelta
 
 class AwsRds:
 
-    def __init__(self,profile="default",region="us-east-1"):       
-        self.profile = profile
-        self.region = region
-        self.session = boto3.Session(profile_name=profile, region_name=region)
+    def __init__(self,Profile="default",Region="us-east-1"):       
+        self.profile = Profile
+        self.region = Region
+        self.session = boto3.Session(profile_name=Profile, region_name=Region)
         self.rds = self.session.client('rds')
 
     def GetInstance(self,Engine:str = "aurora-postgresql",Active: bool = False,RetOut: bool = False):
